@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// To clear the console screen
 #ifdef _WIN32
 #define CLEAR_SCREEN "cls"
 #else
@@ -14,27 +13,23 @@
 #define SEAT_FILE "seats.bin"
 #define COMPLAINT_FILE "complaints.txt"
 
-// Structure for user registration and login
 struct user {
     int id;
     char name[50];
     char mobile_number[20];
     char username[50];
     char password[15];
-    char role[10]; // "student" or "admin"
+    char role[10]; 
 };
 
-// Structure for managing seats
 typedef struct {
     int seatID;
     int isReserved;
-    char studentName[100]; // Stores username of the student
+    char studentName[100]; 
 } Seat;
 
-// Global array to hold all seat information
 Seat seats[MAX_SEATS];
 
-// Function Prototypes
 void main_menu();
 void admin_interface(char* admin_username);
 void student_interface(char* student_username);
@@ -56,14 +51,12 @@ void view_hostel_info();
 void view_student_info(char* student_username);
 
 
-// Main function - Entry point of the program
 int main() {
-    loadSeats(); // Load seat data from file at startup
-    main_menu(); // Show the main menu
+    loadSeats();
+    main_menu(); 
     return 0;
 }
 
-// Displays the main menu for user role selection
 void main_menu() {
     int choice;
     while (1) {
@@ -89,7 +82,7 @@ void main_menu() {
                 login("admin");
                 break;
             case 2:
-                student_interface(NULL); // Pass NULL initially
+                student_interface(NULL); 
                 break;
             case 3:
                 visitor_interface();
@@ -99,13 +92,12 @@ void main_menu() {
                 exit(0);
             default:
                 printf("\nInvalid choice. Please try again.\n");
-                getchar(); // Consume newline
-                getchar(); // Wait for user input
+                getchar(); 
+                getchar(); 
         }
     }
 }
 
-// Handles the student menu (Login/Registration)
 void student_interface(char* logged_in_user) {
     int choice;
 
@@ -131,7 +123,7 @@ void student_interface(char* logged_in_user) {
         return;
     }
 
-    // If user is logged in, show student dashboard
+   
     while (1) {
         system(CLEAR_SCREEN);
         printf("\n******************************************************\n");
@@ -168,7 +160,6 @@ void student_interface(char* logged_in_user) {
     }
 }
 
-// Handles the admin dashboard
 void admin_interface(char* admin_username) {
     int choice;
      while (1) {
@@ -226,7 +217,6 @@ void admin_interface(char* admin_username) {
     }
 }
 
-// Handles visitor functionalities
 void visitor_interface() {
     int choice;
     while(1) {
@@ -250,7 +240,6 @@ void visitor_interface() {
     }
 }
 
-// Handles new user registration
 void registration() {
     struct user u;
     FILE *fp = fopen(USER_FILE, "ab+");
@@ -265,7 +254,6 @@ void registration() {
     printf("Enter the id: ");
     scanf("%d", &u.id);
 
-    // Check if ID already exists
     rewind(fp);
     struct user u_read;
     while(fread(&u_read, sizeof(struct user), 1, fp)){
@@ -286,9 +274,9 @@ void registration() {
     scanf("%s", u.username);
     printf("Enter Password: ");
     scanf("%s", u.password);
-    strcpy(u.role, "student"); // Default role is student
+    strcpy(u.role, "student"); 
 
-    fseek(fp, 0, SEEK_END); // Go to the end to append
+    fseek(fp, 0, SEEK_END); 
     fwrite(&u, sizeof(struct user), 1, fp);
     fclose(fp);
 
@@ -297,7 +285,6 @@ void registration() {
     getchar(); getchar();
 }
 
-// Handles user login
 void login(const char* role) {
     char username[50], password[15];
     FILE *fp;
@@ -311,7 +298,6 @@ void login(const char* role) {
     printf("Password: ");
     scanf("%s", password);
 
-    // Special case for default admin login
     if (strcmp(role, "admin") == 0 && strcmp(username, "admin") == 0 && strcmp(password, "admin123") == 0) {
         found = 1;
         strcpy(u.username, "admin");
@@ -344,7 +330,6 @@ void login(const char* role) {
     }
 }
 
-// Displays hostel rules
 void view_rules() {
     system(CLEAR_SCREEN);
     printf("\n--- Rules and Regulations ---\n\n");
@@ -362,7 +347,6 @@ void view_rules() {
     getchar(); getchar();
 }
 
-// Displays payment status (placeholder)
 void view_payment() {
     system(CLEAR_SCREEN);
     printf("\n--- Payment Status ---\n");
@@ -374,7 +358,6 @@ void view_payment() {
     getchar(); getchar();
 }
 
-// Displays general hostel info for visitors
 void view_hostel_info() {
     system(CLEAR_SCREEN);
     printf("\n--- Hostel Information ---\n\n");
@@ -390,7 +373,6 @@ void view_hostel_info() {
     getchar(); getchar();
 }
 
-// Manages seat reservation options
 void seatManagement(char* student_username) {
     int choice;
     while(1) {
@@ -428,7 +410,6 @@ void seatManagement(char* student_username) {
     }
 }
 
-// Reserves a seat for a student
 void reserveSeat(char* student_username) {
     int seat_id;
     printf("\nEnter Seat ID (1-%d): ", MAX_SEATS);
@@ -448,7 +429,6 @@ void reserveSeat(char* student_username) {
     getchar(); getchar();
 }
 
-// Renews a student's seat reservation
 void renewSeat(char* student_username) {
     int seat_id = -1;
     for (int i = 0; i < MAX_SEATS; i++) {
@@ -467,7 +447,6 @@ void renewSeat(char* student_username) {
      getchar(); getchar();
 }
 
-// Cancels a student's seat reservation
 void cancelSeat(char* student_username) {
      int seat_id = -1, index = -1;
     for (int i = 0; i < MAX_SEATS; i++) {
@@ -490,7 +469,6 @@ void cancelSeat(char* student_username) {
     getchar(); getchar();
 }
 
-// Allows students to submit a complaint
 void submitComplaint(char* student_username) {
     char complaint[500];
     FILE *fp = fopen(COMPLAINT_FILE, "a");
@@ -510,7 +488,6 @@ void submitComplaint(char* student_username) {
     getchar();
 }
 
-// Allows admin to view all submitted complaints
 void viewComplaints() {
     char ch;
     FILE *fp = fopen(COMPLAINT_FILE, "r");
@@ -526,7 +503,6 @@ void viewComplaints() {
     getchar(); getchar();
 }
 
-// View student's own information based on username
 void view_student_info(char* student_username) {
     FILE* fp = fopen(USER_FILE, "rb");
     struct user u;
@@ -554,7 +530,6 @@ void view_student_info(char* student_username) {
     getchar(); getchar();
 }
 
-// Initializes seats if the file doesn't exist
 void initializeSeats() {
     for (int i = 0; i < MAX_SEATS; i++) {
         seats[i].seatID = i + 1;
@@ -564,7 +539,6 @@ void initializeSeats() {
     saveSeats();
 }
 
-// Loads seat data from a binary file
 void loadSeats() {
     FILE *fp = fopen(SEAT_FILE, "rb");
     if (fp == NULL) {
@@ -575,7 +549,6 @@ void loadSeats() {
     }
 }
 
-// Saves the current seat data to a binary file
 void saveSeats() {
     FILE *fp = fopen(SEAT_FILE, "wb");
     if (fp == NULL) {
